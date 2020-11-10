@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="/css/main.css">
+        {% block styles %}{% endblock styles %}
+        <title>{% block title %}Dobot Arm{% endblock %}</title>
+    </head>
+    <body class="bg-dark text-white">
+        {% include "navbar.html.jinja" %}
+
+        {% if device and device.ser and device.state == Enums.ConnectState.CONNECTED %}
+            <div id="connected-alert" class="alert alert-success show-connected">
+        {% else %}
+            <div id="connected-alert" class="alert alert-success show-connected d-none">
+        {% endif %}
+                Dobot is connected! 
+                <button id="disconnect-btn" name="disconnect-btn" class="btn btn-primary" data-use-ws="true">Disonnect</button>
+                <span id="disconnecting" class="d-none">Attempting to disconnect!</span>
+            </div>
+        {# {% else %} #}
+        {% if not device or not device.ser or device.state == Enums.ConnectState.NOT_CONNECTED %}
+            <div id="disconnected-alert" class="w-100 show-disconnected">
+        {% else %}
+            <div id="disconnected-alert" class="w-100 show-disconnected d-none">
+        {% endif %}
+                <div class="alert alert-warning">Dobot not connected!</div>
+                <div class="connect-form">
+                    <label for="port">Port</label>
+                    <select id="port" name="port">
+                        {% for p in ports %}
+                            <option value="{{ p.device }}">{{ p.device }}</option>
+                        {% endfor %}
+                    </select>
+                    <button id="connect-btn" name="connect-btn" class="btn btn-primary" data-use-ws="true">Connect</button>
+                    <span id="connecting" class="d-none">Attempting to connect!</span>
+                </div>
+            </div>
+        {# {% endif %} #}
+        
+        <div id="content" class="container">{% block content %}{% endblock %}</div>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script>
+            $(() => {
+                var ws
+
+                $('#connect-btn').click(e => {
+                    e.preventDefault()
+                    $('.btn').prop("disabled",true)
+                    $('#connecting').removeClass('d-none')
+                    d = {
+                        type: 'control-command',
+                        command: 'connect',
+                        port: $('#port').val()
+                    }
+                    for (f in e.currentTarget.dataset) {
+                        d[f] = e.currentTarget.dataset[f]
+                    }
+                    if (e.currentTarget.dataset['useWs'] && ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify(d))
+                    }
+                    else {
+                        $.get('/controls/connect', d, data => {
+                            console.log(data)
+                            $('#connecting').addClass('d-none')
+                            $('.btn').prop("disabled",false)
+                        })
+                    }
+                })
+
+                $('#disconnect-btn').click(e => {
+                    e.preventDefault()
+                    $('.btn').prop("disabled",true)
+                    $('#disconnecting').removeClass('d-none')
+                    d = {
+                        type: 'control-command',
+                        command: 'disconnect'
+                    }
+                    for (f in e.currentTarget.dataset) {
+                        d[f] = e.currentTarget.dataset[f]
+                    }
+                    if (e.currentTarget.dataset['useWs'] && ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify(d))
+                    }
+                    else {
+                        $.get('/controls/disconnect', d, data => {
+                            console.log(data)
+                            $('#disconnecting').addClass('d-none')
+                            $('.btn').prop("disabled",false)
+                        })
+                    }
+                })
+                
+                $('.btn-operation').click(e => {
+                    e.preventDefault()
+                    {# console.log(e.currentTarget.dataset) #}
+                    {# console.log(ws) #}
+                    d = {type: 'command'}
+                    for (f in e.currentTarget.dataset) {
+                        d[f] = e.currentTarget.dataset[f]
+                    }
+                    {# console.log(d) #}
+                    if (e.currentTarget.dataset['useWs'] && ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify(d))
+                    }
+                    else {
+                        $.get(e.currentTarget.dataset['url'], d, data => {
+                            console.log(data)
+                        })
+                    }
+                })
+
+                $('.btn-jog-operation').click(e => {
+                    e.preventDefault()
+                    {# console.log(e.currentTarget.dataset['url']) #}
+                    d = {
+                        type: 'control-command',
+                        command: 'jog',
+                        steps: $('#steps').val()
+                    }
+                    for (f in e.currentTarget.dataset) {
+                        d[f] = e.currentTarget.dataset[f]
+                    }
+                    if (e.currentTarget.dataset['useWs'] && ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify(d))
+                    }
+                    else {
+                        $.get(e.currentTarget.dataset['url'], d, data => {
+                            console.log(data)
+                        })
+                    }
+                })
+
+                $('#set-speed').click(e => {
+                    {# console.log(e.currentTarget.dataset['url']) #}
+                    e.preventDefault()
+                    d = {
+                        type: 'control-command',
+                        command: 'set-speed',
+                        velocity: $('#velocity').val(),
+                        acceleration: $('#acceleration').val()
+                    }
+                    for (f in e.currentTarget.dataset) {
+                        d[f] = e.currentTarget.dataset[f]
+                    }
+                    if (e.currentTarget.dataset['useWs'] && ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify(d))
+                    }
+                    else {
+                        $.get(e.currentTarget.dataset['url'], d, data => {
+                            console.log(data)
+                        })
+                    }
+                })
+
+                {% block mainScript %}{% endblock mainScript %}
+
+                function startWebsocket() {
+                    ws = new WebSocket(`ws://${window.location.host}/ws`)
+
+                    ws.onopen = function(e) {
+                        console.log("[open] Connection established");
+                    };
+
+                    ws.onmessage = function(e) {
+                        data = JSON.parse(e.data)
+                        {# console.log(data) #}
+                        if (data.type === 'update') {
+                            if (data.status === 'connected') {
+                                $('.show-disconnected').addClass('d-none')
+                                $('.show-connected').removeClass('d-none')
+                                $('#connecting').addClass('d-none')
+                                $('.btn').prop("disabled",false)
+                                $('#curr-pose').html(`X: ${data.position.x.toFixed(3)}, Y: ${data.position.y.toFixed(3)}, Z: ${data.position.z.toFixed(3)}, R: ${data.position.r.toFixed(3)}<br>J1: ${data.position.j1.toFixed(3)}, J2: ${data.position.j2.toFixed(3)}, J3: ${data.position.j3.toFixed(3)}, J4: ${data.position.j4.toFixed(3)}`)
+                            }
+                            else if (data.status === 'disconnected') {
+                                $('.show-connected').addClass('d-none')
+                                $('.show-disconnected').removeClass('d-none')
+                                $('#disconnecting').addClass('d-none')
+                                $('.btn').prop("disabled",false)
+                            }
+                            selected_port = $('#port').find(":selected").text()
+                            port_options = ''
+                            for (p in data.ports) {
+                                if (data.ports[p] === selected_port) {
+                                    port_options += `<option value="${data.ports[p]}" selected>${data.ports[p]}</option>`
+                                }
+                                else {
+                                    port_options += `<option value="${data.ports[p]}">${data.ports[p]}</option>`
+                                }
+                            }
+                            $('#port').html(port_options)
+                        }
+                        {% block onWSMessage %}{% endblock onWSMessage %}
+                    };
+
+                    ws.onclose = function(e){
+                        // connection closed, discard old websocket and create a new one in 5s
+                        if (e.wasClean) {
+                            console.log(`[close] Connection closed cleanly, code=${e.code} reason=${e.reason}`);
+                        } else {
+                            console.log('[close] Connection died');
+                        }
+                        ws = null
+                        setTimeout(startWebsocket, 5000)
+                    }
+
+                    ws.onerror = function(error) {
+                        console.log(`[error] ${error.message}`);
+                    };
+                }
+
+                startWebsocket()
+            })
+        </script>
+        {% block scripts %}{% endblock scripts %}
+    </body>
+</html>
