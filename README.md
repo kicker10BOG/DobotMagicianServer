@@ -31,6 +31,7 @@ Use git to clone this repository. Then I suggest using a service to keep it runn
 Description=Dobot Magacian Server
 After=network.target
 StartLimitIntervalSec=0
+
 [Service]
 Type=simple
 Restart=always
@@ -41,7 +42,7 @@ ExecStart=/usr/bin/python3 DobotServer.py
 
 [Install]
 WantedBy=multi-user.target
-/etc/systemd/system/dobot.service (END)                                          
+/etc/systemd/system/dobot.service 
 ```
 
 ## How It Works
