@@ -19,6 +19,7 @@ You're going to need to use pip to install the following libraries:
 * cherrypy
 * ws4py
 * pyserial
+* jinja2
 
 That should be it for dependencies, but it's been a while since I set it up. If you see something else that needs to go here, create an issue. 
 
@@ -42,3 +43,33 @@ ExecStart=/usr/bin/python3 DobotServer.py
 WantedBy=multi-user.target
 /etc/systemd/system/dobot.service (END)                                          
 ```
+
+## How It Works
+First, it uses websockets to keep everything synced. This is great if you need to have the ability to control it from more than one device. 
+
+The home page of the server has standard controls for the arm. 
+
+Note that it is important to always home the arm before using it after turning it on. This is especially important when trying to repeat specific movements. 
+
+I've tried to design it so that it's easy to create new addons in the future. This is done by using jinja2 for templating and conf files for specifying what addons to use. Right now the only addon is the spoon addon. 
+
+### Spoon Addon
+This addon uses a json file to store profiles for different types of spoons. You can easily swap between profiles in the user interface. I still need to add a way to create, edit, and delete profiles in the browser, but it's possible to do those by editing the json file directly. 
+
+The controls on this addon should be pretty self-explanatory, but essentially there are two types of movement in the controls.
+
+1) Performing a motion
+2) Going to a specific position
+
+When performing a motion, it chains two or more positions together. 
+
+* The "lower" motion goes the "back" position then the "down" position. 
+* The "scoop" motion goes the "down" position then the "scoop" position. 
+* The "lower" motion goes the "scoop" position then the "up" position. 
+
+When gusing the position buttons, the arm just goes straight to that position. 
+
+* The "up" position puts the spoon in a position that should be close to the mouth. 
+* The "back" position should put the spoon at the top of the back of the bowl. 
+* The "down" position puts the spoon either at the bottom of the bowl or close to it. I have profiles that do both and I switch between them depending on how full the bowl is. 
+* The "scoop" position should bring the spoon up just out of the bowl in a level position so nothing falls off (usually). 
