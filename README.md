@@ -44,6 +44,18 @@ ExecStart=/usr/bin/python3 DobotServer.py
 WantedBy=multi-user.target
 ```
 
+After creating that file and checking to make sure the paths are correct, run the following command to have the systemd discover it. Depending on your user permissions, you may need to use sudo. 
+
+```systemctl daemon-reload```
+
+The next command is optional but will ensure it is always enabled.
+
+```systemctl enable dobot.service```
+
+The next one will start it.
+
+```systemctl start dobot.service```
+
 ## How It Works
 First, it uses websockets to keep everything synced. This is great if you need to have the ability to control it from more than one device. 
 
