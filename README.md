@@ -7,7 +7,7 @@ I needed to replace my 20+ year old machine and all of the specialized devices w
 
 Video of how it works: https://www.youtube.com/watch?v=Gtf_Rhcddrw
 
-The video shows a pi zero w, but I'm using a pi 3b+ now as I think there's something in the code I need to fix so it works more reliably over longer periods of time. Right now the Dobot service I setup needs to be restarted every so often or it stops serving and the 3b+ handles that much better than the zero w. I'll work on that when I get time.
+The video shows a pi zero w, but I'm using a pi 3b+ now as I think there's something in the code I need to fix so it works more reliably over longer periods of time. Right now the Dobot service I setup needs to be restarted every so often or it stops serving and the 3b+ handles that much better than the zero w. I may have fixed this and will know in a few days.
 
 Feel free to take the models and code and modify them for anything you need. I want this to be easily accessible an modifiable by anyone who needs it. I'm including the f3d and step files to make that easier.
 
