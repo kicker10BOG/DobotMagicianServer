@@ -24,7 +24,7 @@ You're going to need to use pip to install the following libraries:
 That should be it for dependencies, but it's been a while since I set it up. If you see something else that needs to go here, create an issue. 
 
 ## Setup 
-Use git to clone this repository. Then I suggest using a service to keep it running. Below is the service config I use.
+Use git to clone this repository. Then I suggest using a service to keep it running. Below is the service config I use at `/etc/systemd/system/dobot.service`.
 
 ```
 [Unit]
@@ -42,7 +42,6 @@ ExecStart=/usr/bin/python3 DobotServer.py
 
 [Install]
 WantedBy=multi-user.target
-/etc/systemd/system/dobot.service 
 ```
 
 ## How It Works
