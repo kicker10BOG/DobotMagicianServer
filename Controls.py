@@ -13,12 +13,13 @@ class Controls(object):
 
     def listen(self, m): 
         if m['type'] == 'control-command':
-            if m['command'] == 'connect': self.connect(**m)
-            elif m['command'] == 'disconnect': self.disconnect(**m)
-            elif m['command'] == 'home': self.home(**m)
-            elif m['command'] == 'setSpeed': self.setSpeed(**m)
-            elif m['command'] == 'pose': self.pose(**m)
-            elif m['command'] == 'jog': self.jog(**m)
+            if 'command' in m.keys():
+                if m['command'] == 'connect': self.connect(**m)
+                elif m['command'] == 'disconnect': self.disconnect(**m)
+                elif m['command'] == 'home': self.home(**m)
+                elif m['command'] == 'setSpeed': self.setSpeed(**m)
+                elif m['command'] == 'pose': self.pose(**m)
+                elif m['command'] == 'jog': self.jog(**m)
 
     @cherrypy.expose
     def index(self): 
@@ -30,7 +31,9 @@ class Controls(object):
         ports = [p.device for p in ports]
         if not devices.device or not devices.device.ser or not devices.device.ser.isOpen():
             devices.device = Dobot(port, verbose=False)
+        m = None
         if devices.device.state == ConnectState.CONNECTED:
+            pos = devices.device.pose_p()
             m = json.dumps({
                 'type': 'update',
                 'status': 'connected',
@@ -44,6 +47,7 @@ class Controls(object):
     def disconnect(self, **args): 
         ports = list_ports.comports()
         ports = [p.device for p in ports]
+        m = None
         devices.device.close()
         if devices.device.state == ConnectState.NOT_CONNECTED:
             m = json.dumps({
