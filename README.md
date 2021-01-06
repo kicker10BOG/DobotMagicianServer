@@ -1,11 +1,15 @@
 # DobotMagicianServer
 A web server for controlling a Dobot Magician robotic arm
 
+![Picture of 3d prints on dobot magician](./models/dobot%20feeder.jpg)
+
 ## Why
 
 I needed to replace my 20+ year old machine and all of the specialized devices were just too expensive, so I got a Dobot Magician because it's much less expensive and more versatile than any of the specialized devices. Being in software development, I knew I could write code to make it work how I wanted. And being decent with Fusion 360 made me confident I could design the necessary models. 
 
-Video of how it works: https://www.youtube.com/watch?v=Gtf_Rhcddrw
+Video of how it works: 
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Gtf_Rhcddrw/0.jpg)](https://www.youtube.com/watch?v=Gtf_Rhcddrw)
 
 The video shows a pi zero w, but I'm using a pi 3b+ now as I think there's something in the code I need to fix so it works more reliably over longer periods of time. Right now the Dobot service I setup needs to be restarted every so often or it stops serving and the 3b+ handles that much better than the zero w. I may have fixed this and will know in a few days.
 
