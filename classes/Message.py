@@ -15,6 +15,7 @@ class Message:
             self.ctrl = ControlValues(b[4])
             self.params = b[5:-1]
             self.checksum = b[-1:][0]
+        return
 
     def __repr__(self):
         return "Message()"
@@ -38,6 +39,7 @@ class Message:
             self.checksum = 2 ** 8 - self.checksum
             self.checksum = self.checksum % 256
             self.len = 0x02 + len(self.params)
+        return
 
     def bytes(self):
         self.refresh()

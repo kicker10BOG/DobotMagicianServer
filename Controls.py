@@ -10,6 +10,7 @@ import helpers
 class Controls(object):
     def __init__(self): 
         cherrypy.engine.subscribe('control-broadcast', self.listen)
+        return
 
     def listen(self, m): 
         if m['type'] == 'control-command':
@@ -20,6 +21,7 @@ class Controls(object):
                 elif m['command'] == 'setSpeed': self.setSpeed(**m)
                 elif m['command'] == 'pose': self.pose(**m)
                 elif m['command'] == 'jog': self.jog(**m)
+        return
 
     @cherrypy.expose
     def index(self): 
@@ -108,3 +110,4 @@ class Controls(object):
             print(e)
             traceback.print_exc()
             return e
+        return

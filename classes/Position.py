@@ -23,10 +23,14 @@ class Position(dict):
             j4 = j4,
             name = name
         )
+        return
+
     def toJSON(self):
         return json.dumps(self.__dict__)
+
     def toDict(self):
         return self.__dict__
+
     def fromJSON(self, p):
         self.x = p.x if hassattr(p, 'x') else 0
         self.y = p.y if hassattr(p, 'y') else 0
@@ -50,6 +54,7 @@ class Position(dict):
             name = self.name
         )
         return self
+
     def fromDict(self, p):
         x = p['x'] if 'x' in p else 0
         y = p['y'] if 'y' in p else 0

@@ -46,6 +46,7 @@ class DobotServer(object):
     @cherrypy.expose
     def ws(self):
         cherrypy.log("Handler created: %s" % repr(cherrypy.request.ws_handler))
+        return
 
     def update(self):
         threading.Timer(cherrypy.request.config['dobot.updateInterval'], self.update).start()
@@ -76,6 +77,7 @@ class DobotServer(object):
                 'ports': ports,
             })
             cherrypy.engine.publish('websocket-broadcast', m)
+        return 
         
 if __name__ == '__main__':
     WebSocketPlugin(cherrypy.engine).subscribe()

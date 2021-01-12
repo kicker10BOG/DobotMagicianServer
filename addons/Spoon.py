@@ -13,6 +13,7 @@ class Spoon():
         self.loadProfiles()
         self.loadProfile(profileName = self.selectedProfile)
         cherrypy.engine.subscribe('addon-broadcast', self.listen)
+        return
 
     def listen(self, m): 
         if m['type'] == 'addon-command' and m['addon'] == 'spoon':
@@ -25,6 +26,7 @@ class Spoon():
             elif m['command'] == 'raise': self.raiseArm(**m)
             elif m['command'] == 'loadProfile': self.loadProfile(**m)
             elif m['command'] == 'loadProfiles': self.loadProfiles(**m)
+        return
 
     @cherrypy.expose(['spoon', 'Spoon', 'SPOON'])
     def index(self):

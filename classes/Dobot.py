@@ -36,6 +36,7 @@ class Dobot:
         self._set_ptp_jump_params(10, 200)
         self._set_ptp_common_params(velocity=100, acceleration=100)
         self._get_pose()
+        return
 
     def _get_queued_cmd_current_index(self):
         '''
@@ -141,6 +142,7 @@ class Dobot:
         if self.verbose:
             print('pydobot: >>', msg)
         self.ser.write(msg.bytes())
+        return
 
     def _set_cp_cmd(self, x, y, z):
         '''
@@ -326,29 +328,36 @@ class Dobot:
         if self.verbose:
             print('pydobot: %s closed' % self.ser.name)
         self.lock.release()
+        return
 
     def go(self, x, y, z, r=0.):
         warnings.warn('go() is deprecated, use move_to() instead')
         self.move_to(x, y, z, r)
+        return
 
     def move_to(self, x, y, z, r, wait=False, mode=PTPMode.MOVJ_XYZ):
         self._set_ptp_cmd(x, y, z, r, mode=mode, wait=wait)
+        return
 
     def move_to_p(self, position, wait=False, mode=PTPMode.MOVJ_XYZ):
         if mode in [PTPMode.MOVJ_XYZ, PTPMode.MOVL_XYZ, PTPMode.JUMP_XYZ]: 
             self._set_ptp_cmd(position.x, position.y, position.z, position.r, mode=mode, wait=wait)
         elif mode in [PTPMode.MOVJ_ANGLE, PTPMode.MOVL_ANGLE, PTPMode.JUMP_ANGLE]:
             self._set_ptp_cmd(position.j1, position.j2, position.j3, position.j4, mode=mode, wait=wait)
+        return
 
     def suck(self, enable):
         self._set_end_effector_suction_cup(enable)
+        return
 
     def grip(self, enable):
         self._set_end_effector_gripper(enable)
+        return
 
     def set_speed(self, velocity=100., acceleration=100.):
         self._set_ptp_common_params(velocity, acceleration)
         self._set_ptp_coordinate_params(velocity, acceleration)
+        return
 
     def get_speed(self):
         return self._get_ptp_common_params()
@@ -379,6 +388,7 @@ class Dobot:
 
     def home(self):
         self._set_home_cmd()
+        return
 
     def path_p(self, positions, wait=False, mode=PTPMode.MOVJ_XYZ):
         pass
