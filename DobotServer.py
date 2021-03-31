@@ -27,6 +27,15 @@ class StatusWebSocketHandler(WebSocket):
             print(e)
             traceback.print_exc()
         # cherrypy.engine.publish('websocket-broadcast', m)
+        fsize = os.path.getsize('app.log')
+        if fsize > 50000: 
+            f = open('app.log', 'r')
+            d = f.readlines()
+            f.close()
+            del d[0:-100]
+            f = open('app.log', 'w')
+            f.writelines(d)
+            f.close()
         # pass
 
     def closed(self, code, reason="A client left the room without a proper explanation."):
