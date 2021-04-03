@@ -28,7 +28,7 @@ class StatusWebSocketHandler(WebSocket):
             traceback.print_exc()
         # cherrypy.engine.publish('websocket-broadcast', m)
         fsize = os.path.getsize('app.log')
-        if fsize > 50000: 
+        if fsize > 20000: 
             f = open('app.log', 'r')
             d = f.readlines()
             f.close()
