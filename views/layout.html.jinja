@@ -17,6 +17,10 @@
         {% endif %}
                 Dobot is connected! 
                 <button id="disconnect-btn" name="disconnect-btn" class="btn btn-primary" data-use-ws="true">Disonnect</button>
+                <div class="form-check form-switch">
+                    <label class="form-check-label" for="hotkeys">Enable Hotkeys</label>
+                    <input class="form-check-input" type="checkbox" id="hotkeys">
+                </div>
                 <span id="disconnecting" class="d-none">Attempting to disconnect!</span>
             </div>
         {# {% else %} #}
@@ -30,7 +34,7 @@
                     <label for="port">Port</label>
                     <select id="port" name="port">
                         {% for p in ports %}
-                            <option value="{{ p.device }}">{{ p.device }}</option>
+                            <option value="{{ p.device }}">{{ p.device }}: {{ p.description }}</option>
                         {% endfor %}
                     </select>
                     <button id="connect-btn" name="connect-btn" class="btn btn-primary" data-use-ws="true">Connect</button>
@@ -38,7 +42,7 @@
                 </div>
             </div>
         {# {% endif %} #}
-        
+
         <div id="content" class="container">{% block content %}{% endblock %}</div>
 
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -125,6 +129,8 @@
                     for (f in e.currentTarget.dataset) {
                         d[f] = e.currentTarget.dataset[f]
                     }
+                    console.log(d)
+                    {# return #}
                     if (e.currentTarget.dataset['useWs'] && ws && ws.readyState === WebSocket.OPEN) {
                         ws.send(JSON.stringify(d))
                     }
@@ -158,6 +164,67 @@
                 })
 
                 {% block mainScript %}{% endblock mainScript %}
+                
+                // keypress actions
+                $(document).keypress(function(e) {
+                    enabled = $('#hotkeys').is(':checked')
+                    console.log(enabled)
+                    console.log(e.code)
+                    if (!enabled) {
+                        return
+                    }
+                    // XYZR
+                    if (e.code == 'KeyW') {
+                        $('#yn').click()
+                    }
+                    else if (e.code == 'KeyS') {
+                        $('#yp').click()
+                    }
+                    else if (e.code == 'KeyA') {
+                        $('#xp').click()
+                    }
+                    else if (e.code == 'KeyD') {
+                        $('#xn').click()
+                    }
+                    else if (e.code == 'KeyR') {
+                        $('#zp').click()
+                    }
+                    else if (e.code == 'KeyF') {
+                        $('#zn').click()
+                    }
+                    else if (e.code == 'KeyQ') {
+                        $('#rn').click()
+                    }
+                    else if (e.code == 'KeyE') {
+                        $('#rp').click()
+                    }
+                    // Joints
+                    else if (e.code == 'KeyI') {
+                        $('#j1n').click()
+                    }
+                    else if (e.code == 'KeyK') {
+                        $('#j1p').click()
+                    }
+                    else if (e.code == 'KeyJ') {
+                        $('#j2p').click()
+                    }
+                    else if (e.code == 'KeyL') {
+                        $('#j2n').click()
+                    }
+                    else if (e.code == 'KeyP') {
+                        $('#j3n').click()
+                    }
+                    else if (e.code == 'Semicolon') {
+                        $('#j3p').click()
+                    }
+                    else if (e.code == 'KeyU') {
+                        $('#j4n').click()
+                    }
+                    else if (e.code == 'KeyO') {
+                        $('#j4p').click()
+                    }
+                    {% block keyCodes %}{% endblock keyCodes %}
+                })
 
                 function startWebsocket() {
                     ws = new WebSocket(`ws://${window.location.host}/ws`)
@@ -175,7 +242,7 @@
                                 $('.show-connected').removeClass('d-none')
                                 $('#connecting').addClass('d-none')
                                 $('.btn').prop("disabled",false)
-                                $('#curr-pose').html(`X: ${data.position.x.toFixed(3)}, Y: ${data.position.y.toFixed(3)}, Z: ${data.position.z.toFixed(3)}, R: ${data.position.r.toFixed(3)}<br>J1: ${data.position.j1.toFixed(3)}, J2: ${data.position.j2.toFixed(3)}, J3: ${data.position.j3.toFixed(3)}, J4: ${data.position.j4.toFixed(3)}`)
+                                $('#currpe').html(`X: ${data.position.x.toFixed(3)}, Y: ${data.position.y.toFixed(3)}, Z: ${data.position.z.toFixed(3)}, R: ${data.position.r.toFixed(3)}<br>J1: ${data.position.j1.toFixed(3)}, J2: ${data.position.j2.toFixed(3)}, J3: ${data.position.j3.toFixed(3)}, J4: ${data.position.j4.toFixed(3)}`)
                             }
                             else if (data.status === 'disconnected') {
                                 $('.show-connected').addClass('d-none')
@@ -186,11 +253,12 @@
                             selected_port = $('#port').find(":selected").text()
                             port_options = ''
                             for (p in data.ports) {
+                                {# console.log(data.ports[p]) #}
                                 if (data.ports[p] === selected_port) {
-                                    port_options += `<option value="${data.ports[p]}" selected>${data.ports[p]}</option>`
+                                    port_options += `<option value="${data.ports[p].value}" selected>${data.ports[p].name}</option>`
                                 }
                                 else {
-                                    port_options += `<option value="${data.ports[p]}">${data.ports[p]}</option>`
+                                    port_options += `<option value="${data.ports[p].value}">${data.ports[p].name}</option>`
                                 }
                             }
                             $('#port').html(port_options)

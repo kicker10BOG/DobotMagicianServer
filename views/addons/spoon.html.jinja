@@ -15,13 +15,13 @@ Dobot Spoon
             </div>
             <div class="row">
                 <div class="col-4 text-center">
-                    <a class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="lower" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="lower">Lower</a>
+                    <a id="lower-button" class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="lower" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="lower">Lower</a>
                 </div>
                 <div class="col-4 text-center">
-                    <a class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="scoop" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="scoop">Scoop</a>
+                    <a id="scoop-button" class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="scoop" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="scoop">Scoop</a>
                 </div>
                 <div class="col-4 text-center">
-                    <a class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="raise" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="raise">Raise</a>
+                    <a id="raise-button" class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="raise" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="raise">Raise</a>
                 </div>
             </div>
             <div class="row">
@@ -31,16 +31,16 @@ Dobot Spoon
             </div>
             <div class="row">
                 <div class="col-6 col-md-3 text-center">
-                    <a class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="up" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="up">Up</a>
+                    <a id="up-position" class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="up" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="up">Up</a>
                 </div>
                 <div class="col-6 col-md-3 text-center">
-                    <a class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="back" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="back">Back</a>
+                    <a id="back-position" class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="back" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="back">Back</a>
                 </div>
                 <div class="col-6 col-md-3 text-center">
-                    <a class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="down" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="down">Down</a>
+                    <a id="down-position" class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="down" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="down">Down</a>
                 </div>
                 <div class="col-6 col-md-3 text-center">
-                    <a class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="scoopPosition" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="scoopPosition">Scoop</a>
+                    <a id="scoop-position" class="btn btn-lg btn-primary btn-fill btn-operation" href="#" data-url="scoopPosition" data-use-ws="true" data-type="addon-command" data-addon="spoon" data-command="scoopPosition">Scoop</a>
                 </div>
             </div>
             <div class="row">
@@ -107,6 +107,33 @@ Dobot Spoon
             }
         })
 {% endblock mainScript %}
+
+{% block keyCodes %}
+                    // motions
+                    else if (e.code == 'KeyY') {
+                        $('#raise-button').click()
+                    }
+                    else if (e.code == 'KeyH') {
+                        $('#scoop-button').click()
+                    }
+                    else if (e.code == 'KeyN') {
+                        $('#lower-button').click()
+                    }
+                    // positions
+                    else if (e.code == 'KeyX') {
+                        $('#up-position').click()
+                    }
+                    else if (e.code == 'KeyC') {
+                        $('#back-position').click()
+                    }
+                    else if (e.code == 'KeyV') {
+                        $('#down-position').click()
+                    }
+                    else if (e.code == 'KeyB') {
+                        $('#scoop-position').click()
+                    }
+{% endblock keyCodes %}
+
 {% block onWSMessage %}
                             if (data.addon === 'spoon') {
                                 switch(data.type) {

@@ -60,7 +60,9 @@ class DobotServer(object):
     def update(self):
         threading.Timer(cherrypy.request.config['dobot.updateInterval'], self.update).start()
         ports = list_ports.comports()
-        ports = [p.device for p in ports]
+        # ports = [p.device for p in ports]
+        ports = [{'value': p.device, 'name': f'{p.device}: {p.description}'} for p in ports]
+        print(ports)
         if devices.device and devices.device.ser and devices.device.state == ConnectState.CONNECTED:
             try:
                 pos = devices.device.pose_p()
@@ -68,14 +70,14 @@ class DobotServer(object):
                 m = json.dumps({
                     'type': 'update',
                     'status': 'disconnected',
-                    'ports': ports,
+                    'ports': ports.__dict__
                 })
                 cherrypy.engine.publish('websocket-broadcast', m)
                 return
             m = json.dumps({
                 'type': 'update',
                 'status': 'connected',
-                'ports': ports,
+                'ports': ports.__dict__,
                 'position': pos.__dict__
             })
             cherrypy.engine.publish('websocket-broadcast', m)
