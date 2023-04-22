@@ -5,21 +5,23 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Addons
-            </a>
-            <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-            {% for addon in addons %}
-                <a class="dropdown-item" href="/{{ addon.lower() }}">{{ addon }}</a>
-            {% endfor %}
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Addons
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark">
+        {% for addon in addons %}
+          <li>
+            <a class="dropdown-item" href="/{{ addon.lower() }}">{{ addon }}</a>
+          </ll>
+        {% endfor %}
 
-            </div>
-        </li>
+        </ul>
+      </li>
     </ul>
   </div>
 </nav>
