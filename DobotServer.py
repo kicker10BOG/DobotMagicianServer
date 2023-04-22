@@ -77,7 +77,7 @@ class DobotServer(object):
             m = json.dumps({
                 'type': 'update',
                 'status': 'connected',
-                'ports': ports.__dict__,
+                'ports': [] if devices.device else ports.__dict__,
                 'position': pos.__dict__
             })
             cherrypy.engine.publish('websocket-broadcast', m)
