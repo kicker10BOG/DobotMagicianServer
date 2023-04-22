@@ -62,7 +62,7 @@ class DobotServer(object):
         ports = list_ports.comports()
         # ports = [p.device for p in ports]
         ports = [{'value': p.device, 'name': f'{p.device}: {p.description}'} for p in ports]
-        print(ports)
+        # print(ports)
         if devices.device and devices.device.ser and devices.device.state == ConnectState.CONNECTED:
             try:
                 pos = devices.device.pose_p()
